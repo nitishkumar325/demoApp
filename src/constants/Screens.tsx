@@ -1,0 +1,21 @@
+export default {
+  Login: 'Login',
+  SignUp: 'SignUp',
+  forget: 'Forget',
+  OTP: 'OTP',
+  ResetPassword: 'ResetPassword',
+  Landing: 'Landing',
+  Home: 'Home',
+  Circle: 'Circle',
+  Account: 'Profile',
+  EditProfilePicture: 'EditProfilePicture',
+  EditProfile: 'EditProfile',
+  ResetPasswordLogin: 'ResetPasswordLogin',
+  ActiveCircle: 'ActiveCircle',
+  PendingCircle: 'PendingCircle',
+  Help: 'Help',
+  createCircle: 'CreateCircle',
+  addMember: 'AddMember',
+  DarkGateway: 'DarkGateway',
+  BatteryDetail:'BatteryDetail'
+};
