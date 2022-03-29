@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,26 +8,28 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {vw, vh} from '../../../constants/Dimension';
+import { vw, vh } from '../../../constants/Dimension';
 import Header from '../../../component/Header';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import constants from '../../../constants';
 import CustomTextInput from '../../../component/CustomTextInput';
 import CustomButton from '../../../component/CustomButton';
-import {useDispatch, useSelector} from 'react-redux';
-import {getCircle, setValue} from '../../../modules/Auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCircle, setValue } from '../../../modules/Auth';
 import moment from 'moment';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import Loader from '../../../component/Loader/Loader';
 import images from '../../../constants/images';
 import Modal from 'react-native-modal';
-import {State, TextInput} from 'react-native-gesture-handler';
+import { State, TextInput } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
-import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 import Screens from '../../../constants/Screens';
+import TouchID from 'react-native-touch-id';
+
 
 const DarkGateway = () => {
-  const {id} = useSelector((state: {Auth: any}) => ({
+  const { id } = useSelector((state: { Auth: any }) => ({
     id: state.Auth.id,
   }));
   const [loading, setLoading] = React.useState(false);
@@ -37,12 +39,12 @@ const DarkGateway = () => {
   const [isPinEnable, setIsPinEnable] = React.useState(false);
   const [bloder, setbloder] = React.useState(false);
   const navigation = useNavigation();
-  const {active} = useSelector((state: any) => ({
+  const { active } = useSelector((state: any) => ({
     active: state.Auth.active,
   }));
   const [currentSelected, setCurrentSelected] = React.useState(active);
 
-  const onBackPress = () => {};
+  const onBackPress = () => { };
   const inputStyles = {
     width: vw(340),
     backgroundColor: 'white',
@@ -82,6 +84,18 @@ const DarkGateway = () => {
     },
   ];
 
+
+  const optionalConfigObject = {
+    title: 'Authentication Required', // Android
+    imageColor: '#e00606', // Android
+    imageErrorColor: '#ff0000', // Android
+    sensorDescription: 'Touch sensor', // Android
+    sensorErrorDescription: 'Failed', // Android
+    cancelText: 'Cancel', // Android
+    fallbackLabel: 'Show Passcode', // iOS (if empty, then label is hidden)
+    unifiedErrors: false, // use unified error messages (default false)
+    passcodeFallback: false, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
+  };
   const renderRightButton = () => {
     return (
       <TouchableOpacity style={styles.rightCont}>
@@ -115,7 +129,7 @@ const DarkGateway = () => {
             <Text
               style={[
                 styles.buy,
-                {textTransform: 'uppercase', fontStyle: 'normal'},
+                { textTransform: 'uppercase', fontStyle: 'normal' },
               ]}>
               {'Id: PSTI_GW_001'}
             </Text>
@@ -125,7 +139,33 @@ const DarkGateway = () => {
     );
   };
 
-  React.useEffect(() => {}, []);
+
+
+  React.useEffect(() => {
+    TouchID.isSupported(optionalConfigObject)
+      .then(biometryType => {
+        // Success code
+        if (biometryType === 'FaceID') {
+          console.log('FaceID is supported.');
+        } else {
+          console.log('TouchID is supported.');
+          TouchID.authenticate('to demo this react-native component', optionalConfigObject)
+            .then((success:any) => {
+              // Success code
+              console.log("success",success)
+            })
+            .catch((error:any) => {
+              // Failure code
+              console.log("error",error)
+
+            });
+        }
+      })
+      .catch(error => {
+        // Failure code
+        console.log(error);
+      });
+  }, []);
 
   const onItemPress = (status: any, batteryNumber: any) => {
     if (status) {
@@ -161,11 +201,10 @@ const DarkGateway = () => {
           marginVertical: vh(7.5),
         }}>
         <View style={styles.containeer}>
-          <View style={{borderRadius: vw(50)}}>
+          <View style={{ borderRadius: vw(50) }}>
             <Text
-              style={[styles.buy, {fontSize: vw(14)}]}>{`${'Battery'}${' 00'}${
-              batteryNumber + 1
-            }`}</Text>
+              style={[styles.buy, { fontSize: vw(14) }]}>{`${'Battery'}${' 00'}${batteryNumber + 1
+                }`}</Text>
           </View>
           <Image
             source={
@@ -173,16 +212,16 @@ const DarkGateway = () => {
             }
           />
         </View>
-        <View style={{marginTop: vh(10)}}>
+        <View style={{ marginTop: vh(10) }}>
           <View style={styles.alignRow}>
             <Text style={styles.address}>{'Battery ID'}</Text>
-            <Text style={[styles.address, {marginLeft: vw(100)}]}>
+            <Text style={[styles.address, { marginLeft: vw(100) }]}>
               {'Battery Type'}
             </Text>
           </View>
-          <View style={[styles.alignRow, {marginBottom: vh(10)}]}>
+          <View style={[styles.alignRow, { marginBottom: vh(10) }]}>
             <Text style={styles.address2}>{Batteryid}</Text>
-            <Text style={[styles.address2, {marginLeft: vw(95)}]}>
+            <Text style={[styles.address2, { marginLeft: vw(95) }]}>
               {Batterytype}
             </Text>
           </View>
@@ -207,17 +246,17 @@ const DarkGateway = () => {
   const onCross = () => {
     setModal(false);
   };
-  const onContinue = () => {};
+  const onContinue = () => { };
 
   const renderItem = () => {
     return (
-      <View style={{height: '70%'}}>
+      <View style={{ height: '70%' }}>
         <View style={styles.con}>
           <Text style={styles.use}>{'Use Fingerprint to Proceed'}</Text>
           <Text
             style={[
               styles.use,
-              {textAlign: 'center', fontWeight: '300', marginTop: vh(10)},
+              { textAlign: 'center', fontWeight: '300', marginTop: vh(10) },
             ]}>
             {'Use Fingerprint/Pin to confirm\n the action.'}
           </Text>
@@ -254,8 +293,8 @@ const DarkGateway = () => {
   const renderLoder = () => {
     return (
       <LinearGradient
-        start={{x: 0.5, y: 0.5}}
-        end={{x: 1, y: 1}}
+        start={{ x: 0.5, y: 0.5 }}
+        end={{ x: 1, y: 1 }}
         colors={['#25283D', '#383C5D']}
         style={{
           flex: 1,
@@ -270,7 +309,7 @@ const DarkGateway = () => {
           onComplete={onComplete}
           colors={['#f50729', '#db0f2c', '#d46c7a', '#C4C4C4']}
           colorsTime={[7, 5, 2, 0]}>
-          {({remainingTime}) => (
+          {({ remainingTime }) => (
             <Text style={styles.textp}>
               {'Please wait while we\n configure your\n battery '}
             </Text>
@@ -291,7 +330,7 @@ const DarkGateway = () => {
 
       <View style={styles.innerContainner}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{paddingTop: vh(10)}}>
+          <View style={{ paddingTop: vh(10) }}>
             {data.map(item => renderView(item))}
 
             {/* {renderView(true,5)}
