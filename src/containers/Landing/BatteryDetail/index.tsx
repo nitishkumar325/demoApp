@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useRef} from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Animated,
 } from 'react-native';
 import {vw, vh} from '../../../constants/Dimension';
 import Header from '../../../component/Header';
@@ -26,9 +27,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
 import Screens from '../../../constants/Screens';
 import CommonFunction from '../../../Utils/CommonFunction';
+import Images from '../../../constants/images';
 
 const BatteryDetail = () => {
   const [loading, setLoading] = React.useState(false);
+  const fadeAnim = new Animated.Value(0);  // Initial value for opacity: 0
 
   const dispatch = useDispatch();
   const route = useRoute();
@@ -37,6 +40,7 @@ const BatteryDetail = () => {
   const [batteryDetail,SetbatteryDetails]=useState({})
   const [isPinEnable, setIsPinEnable] = React.useState(false);
   const [bloder, setbloder] = React.useState(false);
+  const [animation, setAnimation] = React.useState(false);
   const navigation = useNavigation();
   const onBackPress = () => {};
   const inputStyles = {
@@ -45,59 +49,14 @@ const BatteryDetail = () => {
     borderRadius: vw(10),
   };
 
-  const data: any = [
-    {
-      batterName: '12V_LA',
-      Batteryid: 'PSTI_BAT01',
-      Batterytype: 'Lead Acid',
-      Ratedvoltage: '12V',
-      Capacity: '10Ah',
-      ManufacturerName: 'Exide',
-      ManufacturingDate: 'Jan 2022',
-      complete: true,
-      id: 0,
-    },
-    {
-      batterName: '14.8_LI',
-      Batteryid: 'PSTI_BAT02',
-      Batterytype: 'Li-ion',
-      Ratedvoltage: '12V',
-      Capacity: '10Ah',
-      ManufacturerName: 'Exide',
-      ManufacturingDate: 'Jan 2022',
-      complete: false,
-      id: 1,
-    },
-    {
-      batterName: '12V_LA',
-      Batteryid: 'PSTI_BAT03',
-      Batterytype: 'li-po',
-      Ratedvoltage: '3.7',
-      Capacity: '1800mah',
-      ManufacturerName: 'Orange',
-      ManufacturingDate: 'Oct 2021',
-      complete: false,
-      id: 2,
-    },
-  ];
+ 
 
-  const renderRightButton = () => {
-    return (
-      <TouchableOpacity style={styles.rightCont}>
-        <View style={styles.circle}>
-          <Text style={styles.pStyle}>{'P'}</Text>
-        </View>
-        <TouchableOpacity style={styles.LogoutCnt}>
-          <Text style={styles.LogoutText}>{'Logout'}</Text>
-        </TouchableOpacity>
-      </TouchableOpacity>
-    );
-  };
-
+  
   const onBack = () => {
     navigation.goBack();
   };
 
+ 
   const renderLeftButton = () => {
     return (
       <TouchableOpacity onPress={onBack} style={styles.backButtom}>
@@ -132,6 +91,7 @@ const BatteryDetail = () => {
         (res: any) => {
           setLoading(false)
           console.log('res', res);
+          setAnimation(res?.chargePercentage)
           SetbatteryDetails(res);
         },
         (error: any) => {
@@ -248,7 +208,19 @@ const BatteryDetail = () => {
           <Image source={images.charging} />
         </View>
         <Text style={styles.min}>{'52 mins until full'}</Text>
-        <Image style={styles.batterimage} source={images.batteryAnimation} />
+        <View style={styles.batteryView}>    
+      <Animated.View style={[styles.outerBody,{width:`${batteryDetail?.chargePercentage}%`}]}>
+      </Animated.View>
+      <Text style={styles.batteryPercent}>{`${batteryDetail?.chargePercentage}%`}</Text>
+      <View style={styles.chrgerbody}>
+        <View style={styles.first}>
+        <View style={styles.second}>
+        <Image source={Images.chargerIcon}/>
+        </View>
+        </View>
+    
+      </View>
+        </View>
       </View>
     );
   };
@@ -598,7 +570,55 @@ const styles = StyleSheet.create({
     alignSelf: 'auto',
     marginTop: vh(20),
     fontWeight: '600',
-  },
+  },batteryView:{
+    height:vh(60),
+    width:'100%',
+    backgroundColor:'#303345',
+    marginTop:vh(20),
+    borderRadius:vw(40),
+    
+  },outerBody:{
+    flex:1,
+    backgroundColor:'#63B995',
+    borderRadius:vw(30),
+    width:'100%'
+  },batteryPercent:{
+    position:'absolute',
+    right:10,
+    alignSelf:'center',
+    marginTop:vh(15),
+    color:'white',
+    fontSize:vw(18),
+    fontWeight:'bold'
+  },chrgerbody:{
+    position:'absolute',
+    left:10,
+    height:vw(34),
+    width:vw(34),
+    borderColor:'white',
+    borderWidth:0.3,
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:vw(17),
+    marginTop:vh(10)
+
+  },first:{
+    height:vw(26),
+    width:vw(26),
+    borderColor:'white',
+    borderWidth:0.8,
+    borderRadius:vw(17),
+    justifyContent:'center',
+    alignItems:'center',
+  },second:{
+    height:vw(18),
+    width:vw(18),
+    borderColor:'white',
+    borderWidth:2,
+    borderRadius:vw(17),
+    justifyContent:'center',
+    alignItems:'center',
+  }
 });
 
 export default BatteryDetail;

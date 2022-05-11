@@ -267,7 +267,7 @@ const DarkGateway = () => {
             </Text>
           </View>
         </View>
-        {active !== batteryNumber && (
+        {active !== index && (
           <Image resizeMethod='resize'  style={styles.post} source={images.redBorderRight} />
         )}
       </TouchableOpacity>

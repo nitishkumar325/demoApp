@@ -19,4 +19,5 @@ export default {
   offline: require('../assets/Images/offline.png'),
   current: require('../assets/Images/current.png'),
   electric: require('../assets/Images/electric.png'),
+  chargerIcon:require('../assets/Images/chargerIcon.png'),
 };
