@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import constants from '../../../constants';
 import CustomTextInput from '../../../component/CustomTextInput';
 import CustomButton from '../../../component/CustomButton';
 import {useDispatch, useSelector} from 'react-redux';
-import {getCircle} from '../../../modules/Auth';
+import {getBatteryDetail, getCircle} from '../../../modules/Auth';
 import moment from 'moment';
 import {useFocusEffect} from '@react-navigation/native';
 import Loader from '../../../component/Loader/Loader';
@@ -25,14 +25,16 @@ import {TextInput} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
 import Screens from '../../../constants/Screens';
+import CommonFunction from '../../../Utils/CommonFunction';
 
 const BatteryDetail = () => {
   const [loading, setLoading] = React.useState(false);
 
   const dispatch = useDispatch();
   const route = useRoute();
-  const {batteryNumber} = route.params;
+  const {batteryNumber,batteryId} = route.params;
   const [modal, setModal] = React.useState(false);
+  const [batteryDetail,SetbatteryDetails]=useState({})
   const [isPinEnable, setIsPinEnable] = React.useState(false);
   const [bloder, setbloder] = React.useState(false);
   const navigation = useNavigation();
@@ -113,6 +115,34 @@ const BatteryDetail = () => {
     setModal(true);
   };
 
+  useEffect(() => {
+    getBattery(batteryId);
+  }, []);
+
+
+ 
+
+  const getBattery = (batteryId: any) => {
+    setLoading(true)
+    dispatch(
+      getBatteryDetail(
+        {
+          batteryId: batteryId,
+        },
+        (res: any) => {
+          setLoading(false)
+          console.log('res', res);
+          SetbatteryDetails(res);
+        },
+        (error: any) => {
+          setLoading(false)
+          console.log('error callback', error);
+          CommonFunction.showSnackbar('Something Went Wrong', 'black');
+        },
+      ),
+    );
+  };
+
   const renderView = (status: any) => {
     return (
       <View
@@ -125,37 +155,37 @@ const BatteryDetail = () => {
         }}>
         <View style={[styles.alignRow]}>
           <Text style={styles.address}>{'Battery ID'}</Text>
-          <Text style={[styles.value]}>{data[batteryNumber]?.Batteryid}</Text>
+          <Text style={[styles.value]}>{batteryDetail?.batteryId}</Text>
         </View>
 
         <View style={styles.alignRow}>
           <Text style={styles.address}>{'Battery Type'}</Text>
-          <Text style={[styles.value]}>{data[batteryNumber]?.Batterytype}</Text>
+          <Text style={[styles.value]}>{batteryDetail?.batteryType}</Text>
         </View>
 
         <View style={styles.alignRow}>
           <Text style={styles.address}>{'Voltage'}</Text>
           <Text style={[styles.value]}>
-            {data[batteryNumber]?.Ratedvoltage}
+            {batteryDetail?.relatedVoltage}
           </Text>
         </View>
 
         <View style={styles.alignRow}>
           <Text style={styles.address}>{'Capacity'}</Text>
-          <Text style={[styles.value]}>{data[batteryNumber]?.Capacity}</Text>
+          <Text style={[styles.value]}>{batteryDetail?.capacity}</Text>
         </View>
 
         <View style={styles.alignRow}>
           <Text style={styles.address}>{'Manufacturer name'}</Text>
           <Text style={[styles.value]}>
-            {data[batteryNumber]?.ManufacturerName}
+            {batteryDetail?.manufacturerName}
           </Text>
         </View>
 
         <View style={styles.alignRow}>
           <Text style={styles.address}>{'Manufactured date'}</Text>
           <Text style={[styles.value]}>
-            {data[batteryNumber]?.ManufacturingDate}
+            {batteryDetail?.manufacturerDate}
           </Text>
         </View>
       </View>
@@ -230,14 +260,14 @@ const BatteryDetail = () => {
             <Image source={images.heart} />
             <Text style={styles.health}>{'health'}</Text>
           </View>
-          <Text style={[styles.nin, {paddingHorizontal: vw(34)}]}>{'99%'}</Text>
+          <Text style={[styles.nin, {paddingHorizontal: vw(34)}]}>{`${batteryDetail?.health}${'%'}`}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.box}>
           <View style={styles.alignR}>
             <Image source={images.calender} />
             <Text style={styles.health}>{'Life (Days left)'}</Text>
           </View>
-          <Text style={[styles.nin, {paddingHorizontal: vw(34)}]}>{'189'}</Text>
+          <Text style={[styles.nin, {paddingHorizontal: vw(34)}]}>{batteryDetail?.life}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -257,7 +287,7 @@ const BatteryDetail = () => {
               alignItems: 'center',
               alignSelf: 'center',
             }}>
-            <Text style={[styles.nin]}>{'28.64'}</Text>
+            <Text style={[styles.nin]}>{batteryDetail?.voltage}</Text>
             <Text style={[styles.nin2]}>{'Volts'}</Text>
           </View>
         </TouchableOpacity>
@@ -272,7 +302,7 @@ const BatteryDetail = () => {
               alignItems: 'center',
               alignSelf: 'center',
             }}>
-            <Text style={[styles.nin]}>{'11.20'}</Text>
+            <Text style={[styles.nin]}>{batteryDetail?.batteryCurrent}</Text>
             <Text style={[styles.nin2]}>{'Amps'}</Text>
           </View>
         </TouchableOpacity>
@@ -280,7 +310,9 @@ const BatteryDetail = () => {
     );
   };
 
-  const onPressSave = () => {};
+  const onPressSave = () => {
+    getBattery(batteryId);
+  };
 
   return (
     <SafeAreaView
@@ -310,6 +342,7 @@ const BatteryDetail = () => {
         }}
         customStyle={[styles.saveButtonContainer]}
       />
+     {loading && <Loader />}
     </SafeAreaView>
   );
 };

@@ -15,6 +15,7 @@ const postApiCall = (
     })
     .catch((error: any) => {
       console.log('post response error', error + endPoint);
+      console.warn(error)
       errorCalback(error.response);
     });
 };

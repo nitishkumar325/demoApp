@@ -12,7 +12,7 @@ export default class Loader extends React.PureComponent<LoaderProps> {
     return (
       <View style={Styles.container}>
         <View style={{}}>
-          <Wave size={80} color={'#fa811e'} />
+          <Wave size={80} color={'red'} />
         </View>
       </View>
     );

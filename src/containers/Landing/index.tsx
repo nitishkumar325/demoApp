@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import constants from '../../constants';
 import CustomTextInput from '../../component/CustomTextInput';
 import CustomButton from '../../component/CustomButton';
 import {useDispatch, useSelector} from 'react-redux';
-import {getCircle} from '../../modules/Auth';
+import {getBatteryStatus, getCircle} from '../../modules/Auth';
 import moment from 'moment';
 import {useFocusEffect} from '@react-navigation/native';
 import Loader from '../../component/Loader/Loader';
@@ -23,10 +23,14 @@ import images from '../../constants/images';
 import {useNavigation} from '@react-navigation/native';
 import Screens from '../../constants/Screens';
 import Router from '../../navigator/routes';
+import CommonFunction from '../../Utils/CommonFunction';
 
 const Home = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [batteryStatus,setBatteryStatus]=useState(1)
+  const [loading, setLoading] = React.useState(false);
+
 
   const onLogoutPress = () => {
     Alert.alert(
@@ -45,6 +49,35 @@ const Home = () => {
         },
       ],
       {cancelable: false},
+    );
+  };
+
+  useEffect(()=>{
+    getOnlineStatus('PSTI_GW_001')
+  },[])
+
+
+  const getOnlineStatus = (batteryId:any) => {
+    setLoading(true)
+    dispatch(
+      getBatteryStatus(
+        {
+          gatewayId:batteryId,
+        },
+        (res: any) => {
+          setLoading(false)
+          console.log('res', res);
+          setBatteryStatus(res?.status)
+        },
+        (error: any) => {
+          setLoading(false)
+          console.log('error callback', error);
+          CommonFunction.showSnackbar(
+            "Something went Wrong",
+            'black',
+          );
+        },
+      ),
     );
   };
 
@@ -79,9 +112,9 @@ const Home = () => {
     );
   };
 
-  React.useEffect(() => {}, []);
 
   const onItemPress = () => {
+    if(batteryStatus)
     navigation.navigate(Screens.DarkGateway);
   };
 
@@ -100,7 +133,7 @@ const Home = () => {
           <View style={{backgroundColor: '#303345', borderRadius: vw(50)}}>
             <Text style={styles.buy}>{'Id: PSTI_GW_001'}</Text>
           </View>
-          <Image source={index % 2 !== 0 ? images.online : images.offline} />
+          <Image source={index? images.online : images.offline} />
         </View>
         <View style={styles.marginTop10}>
           <Text style={styles.gatewayName}>{`${'Jaya_001'}`}</Text>
@@ -133,9 +166,10 @@ const Home = () => {
 
       <View style={styles.innerContainner}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View>{renderView(1)}</View>
+          <View>{renderView(batteryStatus)}</View>
         </ScrollView>
       </View>
+      {loading&&<Loader/>}
     </SafeAreaView>
   );
 };

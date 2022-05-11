@@ -1,6 +1,9 @@
 export default {
   otpconfirm: '/api/auth/confirm',
-  login: '/api/auth/login',
+  login: '/getGatewayPingStatus',
+  getBatteryStatus: '/getGatewayPingStatus',
+  getBatteryGateway: '/getBatteriesByGateway',
+  getBatteriesById: '/getBatteriesById',
   forget: '/api/auth/forgot',
   resetPassword: '/api/auth/setforgot',
   mediaUpload: '/api/media/upload',

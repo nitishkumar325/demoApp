@@ -9,7 +9,7 @@ const isAndroid = Platform.OS == 'android';
 const hitslope = {left: 10, right: 10, top: 10, bottom: 10};
 const PlatformNumber = isAndroid ? 0 : 1;
 const ENV_DATA = {
-  BASE_URL: 'http://3.7.240.41:8080',
+  BASE_URL: 'https://pisquare.ameyvartak.dev',
 };
 const $http = axios.create({
   baseURL: ENV_DATA.BASE_URL,

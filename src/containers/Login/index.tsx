@@ -28,6 +28,7 @@ import Router from '../../navigator/routes';
 import Loader from '../../component/Loader/Loader';
 import Colors from '../../constants/Colors';
 import Screens from '../../constants/Screens';
+import Utils from '../../Utils';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -61,8 +62,8 @@ const Login = () => {
     dispatch(
       userLogin(
         {
-          email: email,
-          password: password,
+          ID: email,
+          Pswd: password,
         },
         (res: any) => {
           console.log('res', res);
@@ -85,11 +86,35 @@ const Login = () => {
     );
   };
 
+
+  
+
   const onPressSave = () => {
-    navigation.navigate(Screens.Landing);
+    if(email.toLowerCase()==='demo@pstisbm'&&password==='password'){
+    if (!emailError && !passwordError) {
+      console.log("calkccskk")
+      setError(false);
+      //apiCallForLogin();
+      navigation.navigate(Screens.Landing);
+    } else {
+      setError(true);
+      if (phoneNumberError) {
+        setErrorMsg('Phone number must contain 10 digits');
+      } else if (passwordError) {
+        setErrorMsg(
+          'Password must contain minimum 8 characters, one uppercase, lowercase, number and a special character.',
+        );
+      } else if (emailError) {
+        setErrorMsg('Incorrect email, please retry');
+      }
+    }
+  }else{
+    Utils.CommonFunctions.showSnackbar("Invalid Credential",'BLACK')
+  }
   };
 
   const handleChange = (type: string, val: any) => {
+    
     if (type === 'phone') {
       let num = val.replace(/[- #*;,.<>\{\}\[\]\\\/]/gi, '');
       const mobile = val ? parseInt(CommonFunction.normalizeSpaces(num)) : '';
@@ -97,11 +122,14 @@ const Login = () => {
       setPhoneNumberError(CommonFunction.validatePhone(mobile).msg);
     } else if (type === 'password') {
       const password = CommonFunction.normalizeSpaces(val);
-      setPasswordError(CommonFunction.validatePassword(val).msg);
+      // setPasswordError(CommonFunction.validatePassword(val).msg);
+      setPasswordError('')
       setPassword(password);
     } else if (type === 'email') {
-      setEmail(CommonFunction.normalizeEmail(val));
-      setEmailError(CommonFunction.validateEmail(val).msg);
+      setEmail(val)
+      setEmailError('')
+      // setEmail(CommonFunction.normalizeEmail(val));
+      // setEmailError(CommonFunction.validateEmail(val).msg);
     }
   };
 
@@ -166,13 +194,13 @@ const Login = () => {
             />
           </View>
           <CustomButton
-            isDisabled={false}
+            isDisabled={disabled}
             buttonText={'LOGIN'}
             handleAction={onPressSave}
             textStyle={styles.textStyle}
             customStyle={[
               styles.saveButtonContainer,
-              // {backgroundColor: disabled ? '#EA1C39' : '#6a9589'},
+              {backgroundColor: disabled ? 'grey' : 'red'},
             ]}
           />
 

@@ -9,7 +9,7 @@ const initialState = {
   avatar: '',
   firstname: '',
   lastname: '',
-  active: 0,
+  active: -1,
 };
 
 const AuthReducer = (state = initialState, action: any) => {

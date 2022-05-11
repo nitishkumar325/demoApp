@@ -240,6 +240,95 @@ export const OTPConfirm = (params: Object, callback?: any, Fail?: Function) => {
   };
 };
 
+export const getBatteryStatus = (params: Object, callback?: any, Fail?: Function) => {
+  console.log("params",params)
+  return (dispatch: any, getState: Function) => {
+    utils.Services.postApiCall(
+      utils.EndPoint.getBatteryStatus,
+      {
+        ...params,
+      },
+      (res: any) => {
+        console.log("===res",res)
+        let data = res?.data;
+        if (res.status === 200) {
+          callback(data);
+          
+        } else {
+          Fail && Fail(res);
+          utils.CommonFunctions.showSnackbar('error', constants.Colors.black);
+        }
+      },
+      (err: any) => {
+        console.log('errro', err);
+     
+        Fail && Fail(err);
+        // utils.CommonFunctions.showSnackbar('error', constants.Colors.black);
+      },
+    );
+  };
+};
+
+
+export const getBatteryGateway = (params: Object, callback?: any, Fail?: Function) => {
+  console.log("params",params)
+  return (dispatch: any, getState: Function) => {
+    utils.Services.postApiCall(
+      utils.EndPoint.getBatteryGateway,
+      {
+        ...params,
+      },
+      (res: any) => {
+        console.log("===res",res)
+        let data = res?.data;
+        if (res.status === 200) {
+          callback(data);
+          
+        } else {
+          Fail && Fail(res);
+          utils.CommonFunctions.showSnackbar('error', constants.Colors.black);
+        }
+      },
+      (err: any) => {
+        console.log('errro', err);
+     
+        Fail && Fail(err);
+        // utils.CommonFunctions.showSnackbar('error', constants.Colors.black);
+      },
+    );
+  };
+};
+
+export const getBatteryDetail = (params: Object, callback?: any, Fail?: Function) => {
+  console.log("params",params)
+  return (dispatch: any, getState: Function) => {
+    utils.Services.postApiCall(
+      utils.EndPoint.getBatteriesById,
+      {
+        ...params,
+      },
+      (res: any) => {
+        console.log("===res",res)
+        let data = res?.data;
+        if (res.status === 200) {
+          callback(data);
+          
+        } else {
+          Fail && Fail(res);
+          utils.CommonFunctions.showSnackbar('error', constants.Colors.black);
+        }
+      },
+      (err: any) => {
+        console.log('errro', err);
+     
+        Fail && Fail(err);
+        // utils.CommonFunctions.showSnackbar('error', constants.Colors.black);
+      },
+    );
+  };
+};
+
+
 export const userLogin = (params: Object, callback?: any, Fail?: Function) => {
   return (dispatch: any, getState: Function) => {
     dispatch({
@@ -254,6 +343,7 @@ export const userLogin = (params: Object, callback?: any, Fail?: Function) => {
         ...params,
       },
       (res: any) => {
+        console.log("===res",res)
         let data = res?.data.data;
         if (res.data.status === 200) {
           callback(data.user);
