@@ -23,101 +23,130 @@ import images from '../../constants/images';
 import {useNavigation} from '@react-navigation/native';
 import Screens from '../../constants/Screens';
 import Router from '../../navigator/routes';
+import {VESDK, VideoEditorModal, Configuration} from 'react-native-videoeditorsdk';
+
 
 const Home = () => {
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
 
-  const onLogoutPress = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to exit ?',
-      [
-        {text: 'Cancel', onPress: () => {}},
-        {
-          text: 'OK',
-          onPress: () => {
-            // dispatch(setIntialState());
-            Router.resetNew(navigation, constants.Screens.Login, {
-              type: 'Login',
-            });
-          },
-        },
-      ],
-      {cancelable: false},
-    );
+  interface UniqueItem {
+    /** A unqiue string that makes the item unique identifiable. */
+    identifier: string;
+  }
+
+   interface NamedItem extends UniqueItem {
+    /** A displayable name for the item which is also used for accessibliblity. */
+    name: string;
+  }
+
+  interface MediaItem extends UniqueItem {
+    /**
+     * The title of the media item.
+     * @example // Defaults to:
+     * null
+     */
+    title?: string;
+    /**
+     * The artist of the media item.
+     * @example // Defaults to:
+     * null
+     */
+    artist?: string;
+  }
+  
+  interface AudioClip extends MediaItem {
+    /**
+     * A URI for the thumbnail image of the audio clip.
+     * If `null` a placeholder image will be used.
+     * @example // Defaults to:
+     * null
+     */
+    thumbnailURI?: AssetURI;
+    /**
+     * The duration of the audio clip in seconds.
+     * If `null` the duration will be automatically derived from the asset.
+     * @example // Defaults to:
+     * null
+     */
+    duration?: number;
+    /** A URI for the audio clip.
+     * @note Remote resources are not optimized and therefore should be downloaded
+     * in advance and then passed to the editor as local resources.
+     */
+    audioURI: AssetURI;
+  }
+
+  /** A audio clip category. */
+ interface AudioClipCategory extends NamedItem {
+  /**
+   * A URI for the thumbnail image of the category.
+   * If `null` a placeholder image will be used.
+   */
+  thumbnailURI?: AssetURI;
+  /**
+   * Items of the category.
+   * If `null` an empty category will be created.
+   * @example // Defaults to:
+   * null
+   */
+  items?: (AudioClip)[];
+}
+
+enum CanvasAction {
+  UNDO = "undo",
+  REDO = "redo",
+  DELETE = "delete",
+  BRING_TO_FRONT = "bringtofront",
+  ADD = "add",
+  FLIP = "flip",
+  INVERT = "invert",
+  SOUND_ON_OFF = "soundonoff",
+  PLAY_PAUSE = "playpause",
+}
+
+  let configuration: Configuration = {
+
+ 
+    // Configure sticker tool
+    // sticker: {
+    //   // Enable personal stickers
+    //   personalStickers: true,
+    //   // Configure stickers
+    //   categories: [
+    //     // Create sticker category with stickers
+    //     // Reorder and use existing sticker categories
+    //     { identifier: 'imgly_sticker_category_animated' },
+    //     { identifier: 'imgly_sticker_category_emoticons' },
+    //     // Modify existing sticker category
+    //     {
+    //       identifier: 'imgly_sticker_category_shapes',
+    //       items: [
+    //         { identifier: 'imgly_sticker_shapes_badge_01' },
+    //         { identifier: 'imgly_sticker_shapes_arrow_02' },
+    //         { identifier: 'imgly_sticker_shapes_spray_03' },
+    //       ],
+    //     },
+    //   ],
+    // },
+    audio:{
+      categories:[{identifier:'demo_video',name:'Audio',thumbnailURI:constants.Images.Logo,items:[
+        {identifier:'demo_audio',thumbnailURI:constants.Images.Logo,audioURI:require('./../../../sample1.mp3'),duration:60}
+      ]}],
+      canvasActions:[CanvasAction.DELETE,CanvasAction.PLAY_PAUSE] 
+      // categories:[
+      //   {thumbnailURI:null,items:[{thumbnailURI:null,audioURI:'./../../assets/Images/AudioFile/sample1.mp3'},{thumbnailURI:null,audioURI:'./../../assets/Images/AudioFile/sample2.mp3'}]}
+      // ]
+    }
   };
+  
 
-  const renderRightButton = () => {
-    const [button, setButton] = React.useState(false);
-    return (
-      <TouchableOpacity activeOpacity={1} style={styles.rightCont}>
-        <TouchableOpacity
-          onPress={() => {
-            setButton(!button);
-          }}
-          style={styles.circle}>
-          <Text style={styles.pStyle}>{'P'}</Text>
-        </TouchableOpacity>
-        {button && (
-          <TouchableOpacity onPress={onLogoutPress} style={styles.LogoutCnt}>
-            <Text style={styles.LogoutText}>{'Logout'}</Text>
-          </TouchableOpacity>
-        )}
-      </TouchableOpacity>
-    );
-  };
+ 
 
-  const renderLeftButton = () => {
-    return (
-      <TouchableOpacity style={styles.backButtom}>
-        <View style={styles.inrContainer}>
-          <Image style={styles.iconColor} source={constants.Images.HeaderPic} />
-          <Text style={styles.helloSqr}>{'Hello PSTI_BLR'}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+ 
 
-  React.useEffect(() => {}, []);
+  const onVideoPick=()=>{
+    VESDK.openEditor(require('./../../assets/Images/Video/Test.mp4'),configuration);
 
-  const onItemPress = () => {
-    navigation.navigate(Screens.DarkGateway);
-  };
-
-  const renderView = (index: any) => {
-    return (
-      <TouchableOpacity
-        onPress={onItemPress}
-        style={{
-          backgroundColor: '#383C5D',
-          borderRadius: vw(10),
-          paddingHorizontal: vw(8),
-          paddingVertical: vh(10),
-          marginVertical: vh(15),
-        }}>
-        <View style={styles.containeer}>
-          <View style={{backgroundColor: '#303345', borderRadius: vw(50)}}>
-            <Text style={styles.buy}>{'Id: PSTI_GW_001'}</Text>
-          </View>
-          <Image source={index % 2 !== 0 ? images.online : images.offline} />
-        </View>
-        <View style={styles.marginTop10}>
-          <Text style={styles.gatewayName}>{`${'Jaya_001'}`}</Text>
-          <View style={styles.alignRow}>
-            <Image source={images.location} />
-            <Text style={styles.address}>
-              {'1 MG road, Bangalore - 560001'}
-            </Text>
-          </View>
-          <View style={styles.alignRow}>
-            <Image source={images.Icon} />
-            <Text style={styles.address}>{'12.971599, 77.594563'}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+  }
 
   return (
     <SafeAreaView
@@ -125,17 +154,13 @@ const Home = () => {
         flex: 1,
         backgroundColor: constants.Colors.themeGreen,
         width: '100%',
+        justifyContent:'center',
+        alignItems:'center'
       }}>
-      <Header
-        renderRightButton={renderRightButton}
-        renderLeftButton={renderLeftButton}
-      />
-
-      <View style={styles.innerContainner}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View>{renderView(1)}</View>
-        </ScrollView>
-      </View>
+      <TouchableOpacity onPress={onVideoPick} style={{backgroundColor:'grey',borderRadius:vw(10)}}>
+        <Text style={{padding:vw(10)}}>{"pick video"}</Text>
+      </TouchableOpacity>
+    
     </SafeAreaView>
   );
 };

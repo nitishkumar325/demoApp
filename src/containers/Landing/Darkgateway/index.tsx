@@ -326,45 +326,10 @@ const DarkGateway = () => {
         backgroundColor: constants.Colors.themeGreen,
         width: '100%',
       }}>
-      <Header renderLeftButton={renderLeftButton} />
-
       <View style={styles.innerContainner}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{ paddingTop: vh(10) }}>
-            {data.map(item => renderView(item))}
+        
 
-            {/* {renderView(true,5)}
-            {renderView(true,6)}
-            {renderView(true,7)}
-            {renderView(true,8)}
-            {renderView(true,9)} */}
-          </View>
-        </ScrollView>
       </View>
-      <Modal
-        coverScreen
-        avoidKeyboard
-        backdropOpacity={0.8}
-        animationInTiming={200}
-        animationOutTiming={200}
-        backdropColor="#12141E"
-        animationOut="fadeOutDown"
-        style={styles.modalContainer}
-        isVisible={modal}>
-        <>{renderItem()}</>
-      </Modal>
-      <Modal
-        coverScreen
-        avoidKeyboard
-        backdropOpacity={0.8}
-        animationInTiming={200}
-        animationOutTiming={200}
-        backdropColor="#12141E"
-        animationOut="fadeOutDown"
-        style={styles.modalContainer}
-        isVisible={bloder}>
-        <>{renderLoder()}</>
-      </Modal>
     </SafeAreaView>
   );
 };
