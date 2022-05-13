@@ -20,4 +20,6 @@ export default {
   current: require('../assets/Images/current.png'),
   electric: require('../assets/Images/electric.png'),
   chargerIcon:require('../assets/Images/chargerIcon.png'),
+  idle:require('../assets/Images/idle.png'),
+  discharge:require('../assets/Images/discharge.png'),
 };

@@ -205,13 +205,13 @@ const BatteryDetail = () => {
       <View style={styles.batercon}>
         <View style={styles.alignRow}>
           <Text style={[styles.value]}>{'Battery'}</Text>
-          <Image source={images.charging} />
+          <Image source={batteryDetail?.batteryState===0?images.discharge:batteryDetail?.batteryState===1?images.charging:images.idle} />
         </View>
-        <Text style={styles.min}>{'52 mins until full'}</Text>
+        <Text style={styles.min}>{batteryDetail?.ttf}</Text>
         <View style={styles.batteryView}>    
-      <Animated.View style={[styles.outerBody,{width:`${batteryDetail?.chargePercentage}%`}]}>
-      </Animated.View>
-      <Text style={styles.batteryPercent}>{`${batteryDetail?.chargePercentage}%`}</Text>
+      <View style={[styles.outerBody,{width:`${batteryDetail?.chargePercentage||0}%`}]}>
+      </View>
+      <Text style={styles.batteryPercent}>{`${batteryDetail?.chargePercentage||0}%`}</Text>
       <View style={styles.chrgerbody}>
         <View style={styles.first}>
         <View style={styles.second}>
@@ -580,8 +580,8 @@ const styles = StyleSheet.create({
   },outerBody:{
     flex:1,
     backgroundColor:'#63B995',
-    borderRadius:vw(30),
-    width:'100%'
+    borderRadius:vw(40),
+    width:'100%',
   },batteryPercent:{
     position:'absolute',
     right:10,
