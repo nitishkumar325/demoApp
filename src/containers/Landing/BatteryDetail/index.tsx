@@ -194,7 +194,7 @@ const BatteryDetail = () => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <CountdownCircleTimer
+      <CountdownCircleTimer
           isPlaying
           duration={10}
           size={vw(250)}

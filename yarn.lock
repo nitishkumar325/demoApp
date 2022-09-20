@@ -5081,7 +5081,7 @@ metro@0.66.2, metro@^0.66.1:
     metro-runtime "0.66.2"
     metro-source-map "0.66.2"
     metro-symbolicate "0.66.2"
-    metro-transform-plugins "0.66.2"
+    metro-transform-react-native-imglysdk "0.66.2"
     metro-transform-worker "0.66.2"
     mime-types "^2.1.27"
     mkdirp "^0.5.1"
